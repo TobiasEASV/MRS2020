@@ -5,31 +5,58 @@ import be.Movie;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class MovieDAO implements IMovieDataAccess {
 
     private static final String MOVIES_FILE = "data/movie_titles.txt";
+    private List<Movie> allMoviesInList = new ArrayList<>();
 
 
 
     public List<Movie> getAllMovies() throws IOException {
 
-        return null;
+        File allMovieInFil = new File(MOVIES_FILE);
+        Scanner readLine = new Scanner(allMovieInFil);
+
+        while (readLine.hasNextLine()){
+            String movieData = readLine.nextLine();
+            String[] movieDataSplit = movieData.split(",");
+            int id = Integer.parseInt(movieDataSplit[0]);
+            int year = Integer.parseInt(movieDataSplit[1]);
+            String title = movieDataSplit[2];
+            Movie movie = new Movie(id, year, title );
+            allMoviesInList.add(movie);
+        }
+
+        return allMoviesInList;
     }
 
     @Override
     public Movie createMovie(String title, int year) throws Exception {
-        return null;
+        List<Integer> MoviesId = new ArrayList<>();
+        for (Movie movie: getAllMovies()) {
+            MoviesId.add(movie.getId());
+        }
+
+        int id = 0;
+        while (MoviesId.contains(id)){
+            id++;
+        }
+        return new Movie( id, year, title);
     }
 
     @Override
     public void updateMovie(Movie movie) throws Exception {
-
+        if(allMoviesInList.contains(movie)){
+            int index = allMoviesInList.indexOf(movie);
+            allMoviesInList.;
+        }
     }
 
     @Override
     public void deleteMovie(Movie movie) throws Exception {
-
+        allMoviesInList.remove(movie);
     }
 
 
