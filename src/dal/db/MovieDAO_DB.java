@@ -3,8 +3,6 @@ package dal.db;
 import be.Movie;
 import dal.IMovieDataAccess;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MovieDAO_DB implements IMovieDataAccess {

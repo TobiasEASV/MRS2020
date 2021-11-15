@@ -3,6 +3,7 @@ package dal;
 import be.Movie;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,32 +14,63 @@ public class MovieDAO implements IMovieDataAccess {
     private List<Movie> allMoviesInList = new ArrayList<>();
 
 
-
+    @Override
     public List<Movie> getAllMovies() throws IOException {
 
         File allMovieInFil = new File(MOVIES_FILE);
         Scanner readLine = new Scanner(allMovieInFil);
 
-        while (readLine.hasNextLine()){
+        while (readLine.hasNextLine()) {
             String movieData = readLine.nextLine();
             String[] movieDataSplit = movieData.split(",");
             int id = Integer.parseInt(movieDataSplit[0]);
             int year = Integer.parseInt(movieDataSplit[1]);
             String title = movieDataSplit[2];
-            Movie movie = new Movie(id, year, title );
+            Movie movie = new Movie(id, year, title);
             allMoviesInList.add(movie);
         }
 
+        RandomAccessFile file = new RandomAccessFile(MOVIES_FILE, "r");
+
+        //String string = new String(bytes,StandardCharsets.UTF_8);
+        file.seek(0);
+
+        int i = 0;
+        while (file.readLine() != null){
+
+            String lineString = file.readLine();
+            String[] test = lineString.split(",");
+            if(lineString.isBlank()){
+                break;
+            }
+
+            System.out.println(test[6]);
+            i++;
+
+
+        }
+
+
+        //System.out.println(test);
+        file.close();
+
+
+
+
+
+
         return allMoviesInList;
+
+
+        //return allMoviesInList;
     }
 
     @Override
     public Movie createMovie(String title, int year) throws Exception {
         List<Integer> MoviesId = new ArrayList<>();
-        for (Movie movie: getAllMovies()) {
+        for (Movie movie: allMoviesInList) {
             MoviesId.add(movie.getId());
         }
-
         int id = 0;
         while (MoviesId.contains(id)){
             id++;
@@ -48,15 +80,24 @@ public class MovieDAO implements IMovieDataAccess {
 
     @Override
     public void updateMovie(Movie movie) throws Exception {
-        if(allMoviesInList.contains(movie)){
-            int index = allMoviesInList.indexOf(movie);
-            allMoviesInList.;
+        for (Movie movieOld: getAllMovies()) {
+            if (movieOld.getId() == movie.getId()){
+                //movieOld.getTitle() = movie.getTitle();
+                //movieOld.getYear() = movie.getYear();
+
+            }
+
         }
     }
 
     @Override
     public void deleteMovie(Movie movie) throws Exception {
         allMoviesInList.remove(movie);
+    }
+
+    public static void main(String[] args) throws IOException {
+        MovieDAO movieDAO = new MovieDAO();
+        movieDAO.getAllMovies();
     }
 
 

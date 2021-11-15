@@ -15,7 +15,7 @@ public class MovieManager {
     private IMovieDataAccess movieDAO;
 
     public MovieManager() {
-        movieDAO = new MovieDAO_Mock();
+        movieDAO = new MovieDAO();
     }
 
     public List<Movie> getAllMovies() throws Exception {
