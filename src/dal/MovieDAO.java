@@ -18,7 +18,7 @@ public class MovieDAO implements IMovieDataAccess {
     public List<Movie> getAllMovies() throws IOException {
         List<Movie> allMovies = new ArrayList<>();
 
-        if(allMovies.isEmpty()){
+        if(true){
             try {
                 BufferedReader br = new BufferedReader(new FileReader(MOVIES_FILE));
 
@@ -47,8 +47,9 @@ public class MovieDAO implements IMovieDataAccess {
         List<Movie> movies = getAllMovies();
         int newId = 1;
         if(!movies.isEmpty()){
-            newId = movies.stream().max(Comparator.comparing(Movie::getId)).get().getId();
+            newId = movies.stream().max(Comparator.comparing(Movie::getId)).get().getId() + 1;
         }
+
         Movie newMovie = new Movie( newId, year, title);
         movies.add(newMovie);
         writeAllMoviesToFile(movies);
@@ -69,8 +70,9 @@ public class MovieDAO implements IMovieDataAccess {
         writeAllMoviesToFile(movies);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         MovieDAO movieDAO = new MovieDAO();
+
         for (Movie m : movieDAO.getAllMovies()) {
             System.out.println(m);
 
@@ -84,7 +86,7 @@ public class MovieDAO implements IMovieDataAccess {
             for (Movie movie : movies){
                 bw.write(Integer.toString(movie.getId()));
                 bw.write(FILE_SEPERATOR);
-                bw.write(movie.getYear());
+                bw.write(Integer.toString(movie.getYear()));
                 bw.write(FILE_SEPERATOR);
                 bw.write(movie.getTitle());
                 bw.write(FILE_SEPERATOR);
