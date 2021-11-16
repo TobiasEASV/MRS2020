@@ -3,102 +3,110 @@ package dal;
 import be.Movie;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 
 public class MovieDAO implements IMovieDataAccess {
 
     private static final String MOVIES_FILE = "data/movie_titles.txt";
-    private List<Movie> allMoviesInList = new ArrayList<>();
+    private static final String FILE_SEPERATOR = ",";
+
 
 
     @Override
     public List<Movie> getAllMovies() throws IOException {
+        List<Movie> allMovies = new ArrayList<>();
 
-        File allMovieInFil = new File(MOVIES_FILE);
-        Scanner readLine = new Scanner(allMovieInFil);
+        if(allMovies.isEmpty()){
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(MOVIES_FILE));
 
-        while (readLine.hasNextLine()) {
-            String movieData = readLine.nextLine();
-            String[] movieDataSplit = movieData.split(",");
-            int id = Integer.parseInt(movieDataSplit[0]);
-            int year = Integer.parseInt(movieDataSplit[1]);
-            String title = movieDataSplit[2];
-            Movie movie = new Movie(id, year, title);
-            allMoviesInList.add(movie);
-        }
-
-        RandomAccessFile file = new RandomAccessFile(MOVIES_FILE, "r");
-
-        //String string = new String(bytes,StandardCharsets.UTF_8);
-        file.seek(0);
-
-        int i = 0;
-        while (file.readLine() != null){
-
-            String lineString = file.readLine();
-            String[] test = lineString.split(",");
-            if(lineString.isBlank()){
-                break;
+                while (true) {
+                    String aLineOfText = br.readLine();
+                    if (aLineOfText == null) {
+                        break;
+                    }
+                    String[] movieData = aLineOfText.split(FILE_SEPERATOR);
+                    int id = Integer.parseInt(movieData[0]);
+                    int year = Integer.parseInt(movieData[1]);
+                    String title = movieData[2];
+                    Movie movie = new Movie(id, year, title);
+                    allMovies.add(movie);
+                }
+            }catch (Exception e){
+                System.out.println("Error in MovieDAO");
             }
+        }else return allMovies;
 
-            System.out.println(test[6]);
-            i++;
-
-
-        }
-
-
-        //System.out.println(test);
-        file.close();
-
-
-
-
-
-
-        return allMoviesInList;
-
-
-        //return allMoviesInList;
+        return allMovies;
     }
 
     @Override
     public Movie createMovie(String title, int year) throws Exception {
-        List<Integer> MoviesId = new ArrayList<>();
-        for (Movie movie: allMoviesInList) {
-            MoviesId.add(movie.getId());
+        List<Movie> movies = getAllMovies();
+        int newId = 1;
+        if(!movies.isEmpty()){
+            newId = movies.stream().max(Comparator.comparing(Movie::getId)).get().getId();
         }
-        int id = 0;
-        while (MoviesId.contains(id)){
-            id++;
-        }
-        return new Movie( id, year, title);
+        Movie newMovie = new Movie( newId, year, title);
+        movies.add(newMovie);
+        writeAllMoviesToFile(movies);
+        return newMovie;
     }
 
     @Override
-    public void updateMovie(Movie movie) throws Exception {
-        for (Movie movieOld: getAllMovies()) {
-            if (movieOld.getId() == movie.getId()){
-                //movieOld.getTitle() = movie.getTitle();
-                //movieOld.getYear() = movie.getYear();
-
-            }
-
-        }
+    public void updateMovie(Movie UpdateMovie) throws Exception {
+        List<Movie> movies = getAllMovies();
+        movies.removeIf(movie -> movie.getId() == UpdateMovie.getId());
+        writeAllMoviesToFile(movies);
     }
 
     @Override
     public void deleteMovie(Movie movie) throws Exception {
-        allMoviesInList.remove(movie);
+        List<Movie> movies = getAllMovies();
+        getAllMovies().remove(movie);
+        writeAllMoviesToFile(movies);
     }
 
     public static void main(String[] args) throws IOException {
         MovieDAO movieDAO = new MovieDAO();
-        movieDAO.getAllMovies();
+        for (Movie m : movieDAO.getAllMovies()) {
+            System.out.println(m);
+
+        }
     }
+
+        private void  writeAllMoviesToFile(List<Movie> movies) throws IOException {
+            FileOutputStream fos = new FileOutputStream(MOVIES_FILE);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+            for (Movie movie : movies){
+                bw.write(Integer.toString(movie.getId()));
+                bw.write(FILE_SEPERATOR);
+                bw.write(movie.getYear());
+                bw.write(FILE_SEPERATOR);
+                bw.write(movie.getTitle());
+                bw.write(FILE_SEPERATOR);
+                bw.newLine();
+            }
+            bw.close();
+        }
+
+        private void  writeMovieToFile(Movie movie) throws IOException {
+            FileOutputStream fos = new FileOutputStream(MOVIES_FILE);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+            bw.write(Integer.toString(movie.getId()));
+            bw.write(FILE_SEPERATOR);
+            bw.write(movie.getYear());
+            bw.write(FILE_SEPERATOR);
+            bw.write(movie.getTitle());
+            bw.write(FILE_SEPERATOR);
+            bw.newLine();
+
+            bw.close();
+            }
+}
 
 
 
@@ -145,4 +153,3 @@ public class MovieDAO implements IMovieDataAccess {
     */
 
 
-}

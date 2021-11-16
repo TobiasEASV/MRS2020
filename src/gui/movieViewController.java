@@ -1,19 +1,29 @@
 package gui;
 
 import be.Movie;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class movieViewController implements Initializable {
+
+    @FXML
+    private TextField txtTitle;
+
+    @FXML
+    private TextField txtYear;
+
+    @FXML
+    private TextField txtRatings;
+
+    @FXML
+    private Label labTotalUser;
 
     @FXML
     private TextField txtMovieSearch;
@@ -23,7 +33,7 @@ public class Controller implements Initializable {
 
     private MovieModel movieModel;
 
-    public Controller()  {
+    public movieViewController()  {
 
         try {
             movieModel = new MovieModel();
@@ -57,7 +67,4 @@ public class Controller implements Initializable {
         alert.setHeaderText(t.getMessage());
         alert.showAndWait();
     }
-
-
-
 }
