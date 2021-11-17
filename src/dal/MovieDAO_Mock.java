@@ -24,6 +24,11 @@ public class MovieDAO_Mock implements IMovieDataAccess {
     }
 
     @Override
+    public Movie getMovie(int id) throws Exception {
+        return null;
+    }
+
+    @Override
     public Movie createMovie(String title, int year) throws Exception {
         return null;
     }

@@ -18,9 +18,7 @@ public class MovieDAO implements IMovieDataAccess {
     public List<Movie> getAllMovies() throws IOException {
         List<Movie> allMovies = new ArrayList<>();
 
-        if(true){
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(MOVIES_FILE));
+            try (BufferedReader br = new BufferedReader(new FileReader(MOVIES_FILE))){
 
                 while (true) {
                     String aLineOfText = br.readLine();
@@ -34,12 +32,29 @@ public class MovieDAO implements IMovieDataAccess {
                     Movie movie = new Movie(id, year, title);
                     allMovies.add(movie);
                 }
+                allMovies.sort(Comparator.comparing(Movie::getId));
             }catch (Exception e){
                 System.out.println("Error in MovieDAO");
+                throw e;
             }
-        }else return allMovies;
 
         return allMovies;
+    }
+
+    @Override
+    public Movie getMovie(int id) throws Exception {
+        List<Movie> movies = getAllMovies();
+        try{
+            for (Movie movie: movies) {
+                if(movie.getId() == id){
+                    return movie;
+                }
+            }
+        }catch (Exception e){
+            throw new Exception("Can find the movie");
+        }
+
+        return null;
     }
 
     @Override
@@ -57,17 +72,35 @@ public class MovieDAO implements IMovieDataAccess {
     }
 
     @Override
-    public void updateMovie(Movie UpdateMovie) throws Exception {
+    public void updateMovie(Movie updateMovie) throws Exception {
         List<Movie> movies = getAllMovies();
-        movies.removeIf(movie -> movie.getId() == UpdateMovie.getId());
+        movies.removeIf(movie -> movie.getId() == updateMovie.getId());
+        movies.add(updateMovie);
         writeAllMoviesToFile(movies);
     }
 
     @Override
     public void deleteMovie(Movie movie) throws Exception {
         List<Movie> movies = getAllMovies();
-        getAllMovies().remove(movie);
+        movies.removeIf(m -> m.getId() == movie.getId());
         writeAllMoviesToFile(movies);
+    }
+
+
+    private void  writeAllMoviesToFile(List<Movie> movies) throws IOException {
+        FileOutputStream fos = new FileOutputStream(MOVIES_FILE);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+        for (Movie movie : movies){
+            bw.write(Integer.toString(movie.getId()));
+            bw.write(FILE_SEPERATOR);
+            bw.write(Integer.toString(movie.getYear()));
+            bw.write(FILE_SEPERATOR);
+            bw.write(movie.getTitle());
+            bw.write(FILE_SEPERATOR);
+            bw.newLine();
+        }
+        bw.close();
     }
 
     public static void main(String[] args) throws Exception {
@@ -79,36 +112,8 @@ public class MovieDAO implements IMovieDataAccess {
         }
     }
 
-        private void  writeAllMoviesToFile(List<Movie> movies) throws IOException {
-            FileOutputStream fos = new FileOutputStream(MOVIES_FILE);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-
-            for (Movie movie : movies){
-                bw.write(Integer.toString(movie.getId()));
-                bw.write(FILE_SEPERATOR);
-                bw.write(Integer.toString(movie.getYear()));
-                bw.write(FILE_SEPERATOR);
-                bw.write(movie.getTitle());
-                bw.write(FILE_SEPERATOR);
-                bw.newLine();
-            }
-            bw.close();
-        }
-
-        private void  writeMovieToFile(Movie movie) throws IOException {
-            FileOutputStream fos = new FileOutputStream(MOVIES_FILE);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-            bw.write(Integer.toString(movie.getId()));
-            bw.write(FILE_SEPERATOR);
-            bw.write(movie.getYear());
-            bw.write(FILE_SEPERATOR);
-            bw.write(movie.getTitle());
-            bw.write(FILE_SEPERATOR);
-            bw.newLine();
-
-            bw.close();
-            }
 }
+
 
 
 
