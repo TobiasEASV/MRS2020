@@ -12,10 +12,11 @@ public class UserDAO implements IUserDataAccess{
 
     private static final String USER_FILE = "data/users.txt";
     private static final String FILE_SEPERATOR = ",";
+    public static List<User> allUsers = new ArrayList<>();
 
     @Override
     public List<User> getAllUsers() throws Exception {
-        List<User> allUsers = new ArrayList<>();
+        //List<User> allUsers = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(USER_FILE))){
 
@@ -40,16 +41,44 @@ public class UserDAO implements IUserDataAccess{
 
     @Override
     public User getUser(int id) throws Exception {
+
         List<User> users = getAllUsers();
         try{
             for (User user: users) {
                 if(user.getId() == id){
+
                     return user;
                 }
             }
         }catch (Exception e){
             throw new Exception("Can find the user");
         }
+        return null;
+    }
+
+    public User getUserBinary(int id) throws Exception {
+        //List<User> users = getAllUsers();
+        allUsers.sort(Comparator.comparingInt(User::getId));
+
+        int first = 0;
+        int last = allUsers.size() - 1;
+
+        while (first <= last) {
+            int middle = last + ((first - last) / 2);
+
+            User middlePerson = allUsers.get(middle);
+
+            if (middlePerson.getId() == id) {
+
+                return middlePerson;
+            } else if (middlePerson.getId() < id) {
+                first = middle + 1;
+            } else {
+                last = middle - 1;
+            }
+
+        }
+
         return null;
     }
 

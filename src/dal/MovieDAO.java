@@ -11,12 +11,13 @@ public class MovieDAO implements IMovieDataAccess {
 
     private static final String MOVIES_FILE = "data/movie_titles.txt";
     private static final String FILE_SEPERATOR = ",";
+    public static List<Movie> allMovies = new ArrayList<>();
 
 
 
     @Override
     public List<Movie> getAllMovies() throws IOException {
-        List<Movie> allMovies = new ArrayList<>();
+        //List<Movie> allMovies = new ArrayList<>();
 
             try (BufferedReader br = new BufferedReader(new FileReader(MOVIES_FILE))){
 
@@ -43,17 +44,43 @@ public class MovieDAO implements IMovieDataAccess {
 
     @Override
     public Movie getMovie(int id) throws Exception {
+        int nr = 0;
         List<Movie> movies = getAllMovies();
         try{
             for (Movie movie: movies) {
                 if(movie.getId() == id){
+                    System.out.println("altal rundter " + nr);
                     return movie;
                 }
+                nr++;
             }
         }catch (Exception e){
             throw new Exception("Can find the movie");
         }
 
+        return null;
+    }
+
+    public Movie getMovieBinary(int id) throws IOException {
+        //List<Movie> movies = getAllMovies();
+        allMovies.sort(Comparator.comparingInt(Movie::getId));
+
+        int first = 0;
+        int last = allMovies.size() - 1;
+
+        while (first <= last) {
+            int middle = last + ((first - last) / 2);
+
+            Movie middlePerson = allMovies.get(middle);
+
+            if (middlePerson.getId() == id) {
+                return middlePerson;
+            } else if (middlePerson.getId() < id) {
+                first = middle + 1;
+            } else {
+                last = middle - 1;
+            }
+        }
         return null;
     }
 
