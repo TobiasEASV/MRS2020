@@ -21,15 +21,17 @@ public class UserDAO implements IUserDataAccess{
         try (BufferedReader br = new BufferedReader(new FileReader(USER_FILE))){
 
             while (true) {
-                String aLineOfText = br.readLine();
-                if (aLineOfText == null) {
-                    break;
-                }
-                String[] userData = aLineOfText.split(FILE_SEPERATOR);
-                int id = Integer.parseInt(userData[0]);
-                String name = userData[1];
-               User user = new User(id, name);
-                allUsers.add(user);
+                if(allUsers.isEmpty()) {
+                    String aLineOfText = br.readLine();
+                    if (aLineOfText == null) {
+                        break;
+                    }
+                    String[] userData = aLineOfText.split(FILE_SEPERATOR);
+                    int id = Integer.parseInt(userData[0]);
+                    String name = userData[1];
+                    User user = new User(id, name);
+                    allUsers.add(user);
+                }else break;
             }
             allUsers.sort(Comparator.comparing(User::getId));
         }catch (Exception e){
@@ -57,7 +59,6 @@ public class UserDAO implements IUserDataAccess{
     }
 
     public User getUserBinary(int id) throws Exception {
-        //List<User> users = getAllUsers();
         allUsers.sort(Comparator.comparingInt(User::getId));
 
         int first = 0;
@@ -66,12 +67,12 @@ public class UserDAO implements IUserDataAccess{
         while (first <= last) {
             int middle = last + ((first - last) / 2);
 
-            User middlePerson = allUsers.get(middle);
+            User middleUser = allUsers.get(middle);
 
-            if (middlePerson.getId() == id) {
+            if (middleUser.getId() == id) {
 
-                return middlePerson;
-            } else if (middlePerson.getId() < id) {
+                return middleUser;
+            } else if (middleUser.getId() < id) {
                 first = middle + 1;
             } else {
                 last = middle - 1;

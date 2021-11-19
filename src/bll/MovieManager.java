@@ -7,6 +7,7 @@ import bll.util.MovieSearcher;
 import dal.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MovieManager {
@@ -72,27 +73,41 @@ public class MovieManager {
 
     // Rating
 
-    public void rateMovie(Movie movie, User user, int rating) throws Exception {
-        if(movieDAO.getMovie(movie.getId()) != null || userDAO.getUser(user.getId()) != null){
-            ratingDAO.createRating(movie, user, rating);
+    public void rateMovie(int movieID, int userID, int rating) throws Exception {
+        if(movieDAO.getMovie(movieID) != null || userDAO.getUser(userID) != null){
+            ratingDAO.createRating(movieID, userID, rating);
         }else System.out.println("can not find the user or movie");
 
     }
 
-    public int getRatingOnMovie(Movie movie)throws Exception{
-        List<Rating> movielist = new ArrayList<>();
-        int rat = 1;
+    public int getTotalUserHasRating(Movie movie) throws Exception {
+        int totalUserCountRatings = 0;
         try {
             for (Rating movieRating: ratingDAO.getAllRatings()) {
                 if(movieRating.getMovieId() == movie.getId()){
-                    rat += movieRating.getUserRating();
-                    //movielist.add(movieRating);
+                    totalUserCountRatings++;
                 }
             }
         }catch (Exception e){
             throw new Exception("Can not find the movie");
         }
-        return rat;
+        return totalUserCountRatings;
+    }
+
+    public double getRatingOnMovie(Movie movie)throws Exception{
+        double rat = 0;
+        int totalUserCountRatings = 0;
+        try {
+            for (Rating movieRating: ratingDAO.getAllRatings()) {
+                if(movieRating.getMovieId() == movie.getId()){
+                    rat += movieRating.getUserRating();
+                    totalUserCountRatings++;
+                }
+            }
+        }catch (Exception e){
+            throw new Exception("Can not find the movie");
+        }
+        return rat / totalUserCountRatings;
     }
 
 }

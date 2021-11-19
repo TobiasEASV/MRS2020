@@ -10,7 +10,7 @@ public interface IRatingDataAccess {
 
     public List<Rating> getAllRatings() throws Exception;
 
-    public Rating createRating(Movie movie, User user, int rating) throws Exception;
+    public Rating createRating(int movieID, int userID, int rating) throws Exception;
 
     public void deleteRating(Rating rating) throws Exception;
 

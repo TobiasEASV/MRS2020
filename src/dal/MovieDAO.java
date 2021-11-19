@@ -11,29 +11,30 @@ public class MovieDAO implements IMovieDataAccess {
 
     private static final String MOVIES_FILE = "data/movie_titles.txt";
     private static final String FILE_SEPERATOR = ",";
-    public static List<Movie> allMovies = new ArrayList<>();
+    public List<Movie> allMovies = new ArrayList<>();
 
 
 
     @Override
     public List<Movie> getAllMovies() throws IOException {
-        //List<Movie> allMovies = new ArrayList<>();
 
             try (BufferedReader br = new BufferedReader(new FileReader(MOVIES_FILE))){
+                if(allMovies.isEmpty()) {
+                    while (true) {
 
-                while (true) {
-                    String aLineOfText = br.readLine();
-                    if (aLineOfText == null) {
-                        break;
+                            String aLineOfText = br.readLine();
+                            if (aLineOfText == null) {
+                                break;
+                            }
+                            String[] movieData = aLineOfText.split(FILE_SEPERATOR);
+                            int id = Integer.parseInt(movieData[0]);
+                            int year = Integer.parseInt(movieData[1]);
+                            String title = movieData[2];
+                            Movie movie = new Movie(id, year, title);
+                            allMovies.add(movie);
                     }
-                    String[] movieData = aLineOfText.split(FILE_SEPERATOR);
-                    int id = Integer.parseInt(movieData[0]);
-                    int year = Integer.parseInt(movieData[1]);
-                    String title = movieData[2];
-                    Movie movie = new Movie(id, year, title);
-                    allMovies.add(movie);
+                    allMovies.sort(Comparator.comparing(Movie::getId));
                 }
-                allMovies.sort(Comparator.comparing(Movie::getId));
             }catch (Exception e){
                 System.out.println("Error in MovieDAO");
                 throw e;
@@ -44,15 +45,12 @@ public class MovieDAO implements IMovieDataAccess {
 
     @Override
     public Movie getMovie(int id) throws Exception {
-        int nr = 0;
         List<Movie> movies = getAllMovies();
         try{
             for (Movie movie: movies) {
                 if(movie.getId() == id){
-                    System.out.println("altal rundter " + nr);
                     return movie;
                 }
-                nr++;
             }
         }catch (Exception e){
             throw new Exception("Can find the movie");
@@ -62,7 +60,6 @@ public class MovieDAO implements IMovieDataAccess {
     }
 
     public Movie getMovieBinary(int id) throws IOException {
-        //List<Movie> movies = getAllMovies();
         allMovies.sort(Comparator.comparingInt(Movie::getId));
 
         int first = 0;
@@ -71,11 +68,11 @@ public class MovieDAO implements IMovieDataAccess {
         while (first <= last) {
             int middle = last + ((first - last) / 2);
 
-            Movie middlePerson = allMovies.get(middle);
+            Movie middleMovie = allMovies.get(middle);
 
-            if (middlePerson.getId() == id) {
-                return middlePerson;
-            } else if (middlePerson.getId() < id) {
+            if (middleMovie.getId() == id) {
+                return middleMovie;
+            } else if (middleMovie.getId() < id) {
                 first = middle + 1;
             } else {
                 last = middle - 1;

@@ -81,11 +81,13 @@ public class movieViewController implements Initializable {
             txtTitle.setText(movie.getTitle());
             txtYear.setText(String.valueOf(movie.getYear()));
             txtRatings.setText(String.valueOf(ratingModel.getRating(movie)));
+            labTotalUser.setText(String.valueOf(ratingModel.getTotalUserCountRating(movie)));
         } else {
             // Movie is null, remove all the text.
             txtTitle.setText("");
             txtYear.setText("");
             txtRatings.setText("null");
+            labTotalUser.setText("");
         }
 
     }

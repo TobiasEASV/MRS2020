@@ -13,8 +13,12 @@ public class RatingModel {
 
     }
 
-    public int getRating(Movie movie) throws Exception {
-        return movieManager.getRatingOnMovie(movie);
+    public double getRating(Movie movie) throws Exception {
+        return Math.round(movieManager.getRatingOnMovie(movie));
+    }
+
+    public int getTotalUserCountRating(Movie movie) throws Exception {
+        return Math.round(movieManager.getTotalUserHasRating(movie));
     }
 
 }

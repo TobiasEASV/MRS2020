@@ -2,23 +2,23 @@ package be;
 
 public class Rating {
 
-    private Movie movie;
-    private User user;
+    private int movieID;
+    private int userID;
     private int userRating;
 
 
-    public Rating(Movie movie, User user, int userRating) {
-        this.movie = movie;
-        this.user= user;
+    public Rating(int movieID, int userID, int userRating) {
+        this.movieID = movieID;
+        this.userID = userID;
         this.userRating = userRating;
     }
 
     public int getMovieId() {
-        return movie.getId();
+        return movieID;
     }
 
     public int getUserId() {
-        return user.getId();
+        return userID;
     }
 
     public int getUserRating() {
@@ -26,11 +26,11 @@ public class Rating {
     }
 
     public void setMovieId(int movieId) {
-        this.movie = movie;
+        this.movieID = movieID;
     }
 
     public void setUserId(int userId) {
-        this.user = user;
+        this.userID = userID;
     }
 
     public void setUserRating(int userRating) {
@@ -39,6 +39,6 @@ public class Rating {
 
     @Override
     public String toString() {
-        return movie.getTitle() + ", " + user.getName() + ", " +  userRating;
+        return movieID + ", " + userID + ", " +  userRating;
     }
 }
