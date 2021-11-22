@@ -17,10 +17,10 @@ class MovieSearcherTest {
 
         System.out.println("search");
         List<Movie> searchBase = new ArrayList<>();
-        Movie expectedResult = new Movie(1,1994, "Shawshank Redemption");
+        Movie expectedResult = new Movie(1994, "Shawshank Redemption");
         searchBase.add(expectedResult);
-        searchBase.add(new Movie(2, 2004,"I Robot"));
-        searchBase.add(new Movie(3,1999, "Pirates of Silicon Valley"));
+        searchBase.add(new Movie(2004,"I Robot"));
+        searchBase.add(new Movie(1999, "Pirates of Silicon Valley"));
 
         String query = "red";
         MovieSearcher instance = new MovieSearcher();

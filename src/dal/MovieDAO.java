@@ -89,7 +89,7 @@ public class MovieDAO implements IMovieDataAccess {
             newId = movies.stream().max(Comparator.comparing(Movie::getId)).get().getId() + 1;
         }
 
-        Movie newMovie = new Movie( newId, year, title);
+        Movie newMovie = new Movie(newId, year, title);
         movies.add(newMovie);
         writeAllMoviesToFile(movies);
         return newMovie;

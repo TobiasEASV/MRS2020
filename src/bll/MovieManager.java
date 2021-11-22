@@ -5,6 +5,8 @@ import be.Rating;
 import be.User;
 import bll.util.MovieSearcher;
 import dal.*;
+import dal.db.MovieDAO_DB;
+import dal.db.UserDAO_DB;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +21,9 @@ public class MovieManager {
     private IUserDataAccess userDAO;
 
     public MovieManager() {
-        movieDAO = new MovieDAO();
+        movieDAO = new MovieDAO_DB();
         ratingDAO = new RatingsDAO();
-        userDAO = new UserDAO();
+        userDAO = new UserDAO_DB();
     }
 
     // Movie
