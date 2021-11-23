@@ -6,10 +6,9 @@ import be.User;
 import bll.util.MovieSearcher;
 import dal.*;
 import dal.db.MovieDAO_DB;
+import dal.db.RatingDAO_DB;
 import dal.db.UserDAO_DB;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MovieManager {
@@ -22,7 +21,7 @@ public class MovieManager {
 
     public MovieManager() {
         movieDAO = new MovieDAO_DB();
-        ratingDAO = new RatingsDAO();
+        ratingDAO = new RatingDAO_DB();
         userDAO = new UserDAO_DB();
     }
 
@@ -96,6 +95,7 @@ public class MovieManager {
         return totalUserCountRatings;
     }
 
+    // update denne her !!!!! men SQL (LIKE)
     public double getRatingOnMovie(Movie movie)throws Exception{
         double rat = 0;
         int totalUserCountRatings = 0;

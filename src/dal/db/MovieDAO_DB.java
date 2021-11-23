@@ -14,7 +14,7 @@ import java.util.List;
 public class MovieDAO_DB implements IMovieDataAccess {
 
     private MyDatabaseConnector databaseConnector;
-    public static  List<Movie> allMovies = new ArrayList<>();
+    private List<Movie> allMovies = new ArrayList<>();
 
     public MovieDAO_DB() {
         databaseConnector = new MyDatabaseConnector();
@@ -97,7 +97,6 @@ public class MovieDAO_DB implements IMovieDataAccess {
     }
 
     public void updateMovie(Movie movie) throws Exception {
-        int id = movie.getId();
 
         try (Connection con = databaseConnector.getConnection()) {
             System.out.println("Connection to database");
@@ -106,7 +105,7 @@ public class MovieDAO_DB implements IMovieDataAccess {
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, movie.getTitle());
             pstmt.setInt(2, movie.getYear());
-            pstmt.setInt(3,id);
+            pstmt.setInt(3, movie.getId());
             pstmt.execute();
 
         } catch (Exception e) {
@@ -115,14 +114,13 @@ public class MovieDAO_DB implements IMovieDataAccess {
     }
 
     public void deleteMovie(Movie movie) throws Exception {
-        int id = movie.getId();
 
         try (Connection con = databaseConnector.getConnection()) {
             System.out.println("Connection to database");
 
             String sql  = "DELETE FROM Movie WHERE Id = (?);";
             PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1,id);
+            pstmt.setInt(1,movie.getId());
             pstmt.execute();
 
         } catch (Exception e) {
